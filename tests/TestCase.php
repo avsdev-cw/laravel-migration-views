@@ -12,8 +12,12 @@ use Tests\Models\User;
 
 abstract class TestCase extends Base
 {
+    protected string $connection;
+
     protected function setUp(): void
     {
+        $this->connection = getenv('DATABASE') ?: 'sqlite';
+
         parent::setUp();
 
         $config = require __DIR__.'/config/database.php';

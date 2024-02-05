@@ -21,6 +21,7 @@ Supports Laravel 5.5.25+.
 - [Dropping Views](#dropping-views)
 - [Checking For View Existence](#checking-for-view-existence)
 - [Listing View Columns](#listing-view-columns)
+- [Materialized Views](#materialized-views)
 
 ### Creating Views
 
@@ -98,6 +99,24 @@ Use `getViewColumnListing()` to get the column listing for a view:
 use Staudenmeir\LaravelMigrationViews\Facades\Schema;
 
 $columns = Schema::getViewColumnListing('active_users');
+```
+
+### Materialized Views
+
+On PostgreSQL, you can create a materialized view with `createMaterializedView()`:
+
+```php
+use Staudenmeir\LaravelMigrationViews\Facades\Schema;
+
+$query = DB::table('users')->where('active', true);
+
+Schema::createMaterializedView('active_users', $query);
+```
+
+Use `refreshMaterializedView()` to refresh a materialized view:
+
+```php
+Schema::refreshMaterializedView('active_users');
 ```
 
 ## Contributing

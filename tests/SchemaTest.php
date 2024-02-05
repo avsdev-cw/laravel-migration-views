@@ -64,6 +64,24 @@ class SchemaTest extends TestCase
         $this->assertCount(1, $users);
     }
 
+    public function testCreateMaterializedView()
+    {
+        if ($this->connection !== 'pgsql') {
+            $this->markTestSkipped();
+        }
+
+        Schema::createMaterializedView(
+            'active_users',
+            DB::table('users')->where('active', true)
+        );
+
+        $this->assertDatabaseCount('active_users', 1);
+
+        DB::table('users')->update(['active' => false]);
+
+        $this->assertDatabaseCount('active_users', 1);
+    }
+
     public function testRenameView()
     {
         Schema::createView('active_users', DB::table('users')->where('active', true));
@@ -106,5 +124,23 @@ class SchemaTest extends TestCase
         $columns = Schema::getViewColumnListing('active_users');
 
         $this->assertSame(['id', 'name', 'active', 'created_at', 'updated_at'], $columns);
+    }
+
+    public function testRefreshMaterializedView()
+    {
+        if ($this->connection !== 'pgsql') {
+            $this->markTestSkipped();
+        }
+
+        Schema::createMaterializedView(
+            'active_users',
+            DB::table('users')->where('active', true)
+        );
+
+        DB::table('users')->update(['active' => false]);
+
+        Schema::refreshMaterializedView('active_users');
+
+        $this->assertDatabaseCount('active_users', 0);
     }
 }
