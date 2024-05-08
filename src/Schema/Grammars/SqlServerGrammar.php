@@ -15,7 +15,7 @@ class SqlServerGrammar extends Base
      * @param bool $ifExists
      * @return string
      */
-    public function compileDropView($name, $ifExists)
+    public function compileDropView($name, $ifExists, $materialized)
     {
         $ifExists = $ifExists ? 'if exists ('.$this->compileViewExists().') ' : '';
 

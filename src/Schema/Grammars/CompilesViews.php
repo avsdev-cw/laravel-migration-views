@@ -32,11 +32,13 @@ trait CompilesViews
      * @param bool $ifExists
      * @return string
      */
-    public function compileDropView($name, $ifExists)
+    public function compileDropView($name, $ifExists, bool $materialized = false)
     {
         $ifExists = $ifExists ? 'if exists ' : '';
 
-        return 'drop view '.$ifExists.$this->wrapTable($name);
+        $materializedSql = $materialized ? 'materialized ' : '';
+
+        return 'drop '.$materializedSql.'view '.$ifExists.$this->wrapTable($name);
     }
 
     /**

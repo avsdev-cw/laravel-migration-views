@@ -97,12 +97,13 @@ trait ManagesViews
      *
      * @param string $name
      * @param bool $ifExists
+     * @param bool $materialized
      * @return void
      */
-    public function dropView($name, $ifExists = false)
+    public function dropView($name, $ifExists = false, bool $materialized = false)
     {
         $this->connection->statement(
-            $this->grammar->compileDropView($name, $ifExists)
+            $this->grammar->compileDropView($name, $ifExists, $materialized)
         );
     }
 
@@ -110,11 +111,35 @@ trait ManagesViews
      * Drop a view from the schema if it exists.
      *
      * @param string $name
+     * @param bool $materialized
      * @return void
      */
-    public function dropViewIfExists($name)
+    public function dropViewIfExists($name, bool $materialized = false)
     {
-        $this->dropView($name, true);
+        $this->dropView($name, true, $materialized);
+    }
+
+    /**
+     * Drop a materialized view from the schema.
+     *
+     * @param string $name
+     * @param bool $ifExists
+     * @return void
+     */
+    public function dropMaterializedView($name, $ifExists = false)
+    {
+        $this->dropView($name, $ifExists, true);
+    }
+
+    /**
+     * Drop a materialized view from the schema if it exists.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function dropMaterializedViewIfExists($name)
+    {
+        $this->dropView($name, true, true);
     }
 
     /**
